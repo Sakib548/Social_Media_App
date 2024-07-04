@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AuthContext } from "../context/AuthContext";
+//import { AuthContext } from "../context/AuthContext";
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:5002/api",
@@ -30,8 +30,8 @@ axiosInstance.interceptors.response.use(
       originalRequest.headers["Authorization"] = "Bearer " + accessToken;
       return axiosInstance(originalRequest);
     } catch (err) {
-      const { dispatch } = AuthContext; // Access context directly
-      dispatch({ type: "LOGOUT" });
+      //const { dispatch } = AuthContext; // Access context directly
+      //dispatch({ type: "LOGOUT" });
       return Promise.reject(err);
     }
   }

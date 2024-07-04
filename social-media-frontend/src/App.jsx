@@ -21,6 +21,11 @@ const App = () => {
               path="/dashboard"
               element={<PrivateRoute component={Dashboard} />}
             />
+
+            {/* <Route element={<PrivateRoutes />}>
+              <Route element={<HomePage />} path="/" exact />
+              <Route element={<ProfilePage />} path="/me" />
+            </Route> */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Routes>
