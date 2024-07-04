@@ -7,7 +7,7 @@ import axiosInstance from "../../utils/axiosInstance";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { dispatch } = useContext(AuthContext);
+  const { dispatch, setAuth } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -16,6 +16,9 @@ const Login = () => {
     try {
       const res = await axiosInstance.post("/auth/login", { email, password });
       dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
+      const { accessToken, user } = res.data;
+      console.log(accessToken, user);
+      setAuth(accessToken, user);
       navigate("/");
     } catch (err) {
       dispatch({ type: "LOGIN_FAILURE" });

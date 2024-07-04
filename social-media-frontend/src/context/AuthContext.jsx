@@ -1,6 +1,6 @@
 // src/context/AuthContext.js
 import axios from "axios";
-import { createContext, useEffect, useReducer } from "react";
+import { createContext, useEffect, useReducer, useState } from "react";
 import AuthReducer from "../reducers/AuthReducer";
 
 const INITIAL_STATE = {
@@ -12,8 +12,9 @@ const INITIAL_STATE = {
 export const AuthContext = createContext(INITIAL_STATE);
 
 // eslint-disable-next-line react/prop-types
-export const AuthContextProvider = ({ children }) => {
+export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(AuthReducer, INITIAL_STATE);
+  const [auth, setAuth] = useState({});
 
   useEffect(() => {
     localStorage.setItem("user", JSON.stringify(state.user));
@@ -22,7 +23,7 @@ export const AuthContextProvider = ({ children }) => {
   const refreshToken = async () => {
     try {
       const res = await axios.post(
-        "/api/auth/token",
+        "/auth/token",
         {},
         { withCredentials: true }
       );
@@ -47,9 +48,9 @@ export const AuthContextProvider = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
-        user: state.user,
-        isFetching: state.isFetching,
-        error: state.error,
+        ...state,
+        auth,
+        setAuth,
         dispatch,
       }}
     >

@@ -66,7 +66,7 @@ exports.login = async (req, res) => {
     await user.save();
 
     res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true });
-    res.json({ accessToken });
+    res.json({ accessToken, user });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
