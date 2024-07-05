@@ -8,12 +8,15 @@ const Logout = () => {
   const handleLogout = async () => {
     try {
       await axiosInstance.post("/auth/logout");
-      setAuth({});
-      dispatch({ type: "LOGOUT" }); // Assuming your reducer handles this action
-      // Additional cleanup or redirection logic
-    } catch (err) {
-      console.error("Logout failed:", err);
-      // Handle logout failure, e.g., display error message
+      localStorage.removeItem("user");
+      setAuth(null);
+      dispatch({ type: "LOGOUT" });
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Still clear local state even if server request fails
+      localStorage.removeItem("user");
+      setAuth(null);
+      dispatch({ type: "LOGOUT" });
     }
   };
 

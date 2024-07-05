@@ -8,7 +8,6 @@ import Navbar from "./components/Navbar";
 import PrivateRoute from "./components/PrivateRoute";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
-
 const App = () => {
   return (
     <Router>
@@ -16,16 +15,16 @@ const App = () => {
         <Navbar />
         <main className="flex-grow">
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route
+            {/* <Route
               path="/dashboard"
               element={<PrivateRoute component={Dashboard} />}
-            />
+            /> */}
 
-            {/* <Route element={<PrivateRoutes />}>
-              <Route element={<HomePage />} path="/" exact />
-              <Route element={<ProfilePage />} path="/me" />
-            </Route> */}
+            <Route element={<PrivateRoute />}>
+              <Route path="/" element={<Home />} exact />
+              <Route element={<Dashboard />} path="/dashboard" />
+              {/* <Route element={<ProfilePage />} path="/me" /> */}
+            </Route>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Routes>

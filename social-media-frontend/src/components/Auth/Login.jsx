@@ -16,9 +16,10 @@ const Login = () => {
     try {
       const res = await axiosInstance.post("/auth/login", { email, password });
       dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
-      const { accessToken, user } = res.data;
-      console.log(accessToken, user);
-      setAuth(accessToken, user);
+      console.log("Res Data", res.data);
+      // const { accessToken, user } = res.data;
+      //console.log(accessToken, user);
+      setAuth(res.data);
       navigate("/");
     } catch (err) {
       dispatch({ type: "LOGIN_FAILURE" });

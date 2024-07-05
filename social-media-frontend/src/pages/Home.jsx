@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../context/AuthContext";
 import axiosInstance from "../utils/axiosInstance";
 import Post from "./Post";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
+  const { auth } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -20,6 +22,9 @@ const Home = () => {
 
   return (
     <div>
+      <h1 className="text-3xl text-red-500 text-center">
+        Hello {auth?.user?.username}
+      </h1>
       {posts.map((post) => (
         <Post key={post._id} post={post} />
       ))}
