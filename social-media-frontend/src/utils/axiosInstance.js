@@ -1,39 +1,43 @@
 import axios from "axios";
-//import { AuthContext } from "../context/AuthContext";
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:5002/api",
   withCredentials: true,
 });
 
-const handleTokenRefresh = async (error) => {
-  const originalRequest = error.config;
-  if (error.response.status === 401 && !originalRequest._retry) {
-    originalRequest._retry = true;
-    // eslint-disable-next-line no-useless-catch
-    try {
-      const res = await axiosInstance.post("/auth/token");
-      return res.data.accessToken;
-    } catch (err) {
-      throw err;
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user?.accessToken) {
+      config.headers["Authorization"] = `Bearer ${user.accessToken}`;
     }
-  }
-  throw error;
-};
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
-    try {
-      const accessToken = await handleTokenRefresh(error);
-      const originalRequest = error.config;
-      originalRequest.headers["Authorization"] = "Bearer " + accessToken;
-      return axiosInstance(originalRequest);
-    } catch (err) {
-      //const { dispatch } = AuthContext; // Access context directly
-      //dispatch({ type: "LOGOUT" });
-      return Promise.reject(err);
+    const originalRequest = error.config;
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        const res = await axiosInstance.post("/auth/token");
+        const user = JSON.parse(localStorage.getItem("user"));
+        user.accessToken = res.data.accessToken;
+        localStorage.setItem("user", JSON.stringify(user));
+        originalRequest.headers[
+          "Authorization"
+        ] = `Bearer ${res.data.accessToken}`;
+        return axiosInstance(originalRequest);
+      } catch (refreshError) {
+        localStorage.removeItem("user");
+        // Ideally, redirect to login page here
+        return Promise.reject(refreshError);
+      }
     }
+    return Promise.reject(error);
   }
 );
 

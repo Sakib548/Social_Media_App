@@ -8,15 +8,14 @@ const Logout = () => {
   const handleLogout = async () => {
     try {
       await axiosInstance.post("/auth/logout");
-      localStorage.removeItem("user");
-      setAuth(null);
-      dispatch({ type: "LOGOUT" });
     } catch (error) {
-      console.error("Logout failed:", error);
-      // Still clear local state even if server request fails
+      console.error("Logout request failed:", error);
+    } finally {
       localStorage.removeItem("user");
       setAuth(null);
       dispatch({ type: "LOGOUT" });
+      // Redirect to login page
+      // navigate("/login");
     }
   };
 
