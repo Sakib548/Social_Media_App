@@ -1,11 +1,24 @@
 const express = require("express");
 const { protect } = require("../middlewares/authMiddleware");
 const postController = require("../controllers/postController");
-
+const multer = require("multer");
+const path = require("path");
 const router = express.Router();
 
 // Create a post
-router.post("/", postController.createPost);
+//router.post("/", postController.createPost);
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/"); // Make sure this folder exists
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname)); // Appending extension
+  },
+});
+
+const upload = multer({ storage: storage });
+
+router.post("/", upload.single("image"), postController.createPost);
 
 // Get all posts (for home page)
 router.get("/", postController.getAllPosts);

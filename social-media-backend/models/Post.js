@@ -10,6 +10,13 @@ const PostSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  image: {
+    type: String,
+    default: null,
+  },
+  postType: {
+    type: String,
+  },
   comments: [
     {
       user: {
@@ -26,6 +33,7 @@ const PostSchema = new mongoose.Schema({
       },
     },
   ],
+  likes: [],
   createdAt: {
     type: Date,
     default: Date.now,

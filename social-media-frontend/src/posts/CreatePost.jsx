@@ -1,31 +1,87 @@
-import { useContext, useState } from "react";
+import { useContext, useReducer, useState } from "react";
+import { useForm } from "react-hook-form";
+import { AuthContext } from "../context/AuthContext";
 import { PostContext } from "../context/PostContext";
+import { PostReducer, initialState } from "../reducers/PostReducer";
+import axiosInstance from "../utils/axiosInstance";
 const CreatePost = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const [error, setError] = useState({ email: "", password: "" });
+  //const [error, setError] = useState({ email: "", password: "" });
   const [postContent, setPostContent] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [post, setPost] = useState({ postContent: "", image: null });
   const { message } = useContext(PostContext);
+  const [state, dispatch] = useReducer(PostReducer, initialState);
+  const { auth } = useContext(AuthContext);
 
-  console.log("HD", message);
-  const handlePostSubmit = (e) => {
-    e.preventDefault();
-    // Handle post submission logic here
-    console.log("Post content:", postContent);
-    console.log("Image:", image);
-    // Reset form after submission
-    setPostContent("");
-    setImage(null);
-    setImagePreview(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const user = auth?.user?._id;
+  console.log(user);
+  // const handlePostSubmit = async (formData) => {
+  //   dispatch({ type: "POST_DATA_FETCHING" });
+  //   console.log("FormData", formData);
+  //   try {
+  //     const res = await axiosInstance.post("/posts", {
+  //       user: user,
+  //       content: formData.postContent,
+  //       image: formData.image,
+  //       // Add other fields as necessary
+  //     });
+  //     if (res.status === 200) {
+  //       dispatch({ type: "POST_CREATED", data: res.data });
+  //     }
+  //   } catch (error) {
+  //     console.error(
+  //       "Error creating post:",
+  //       error.response?.data || error.message
+  //     );
+  //     dispatch({
+  //       type: "POST_FETCH_ERROR",
+  //       data: error.response?.data || "An error occurred",
+  //     });
+  //   }
+  // };
+
+  const handlePostSubmit = async (formData) => {
+    dispatch({ type: "POST_DATA_FETCHING" });
+
+    const postData = new FormData();
+    postData.append("content", formData.postContent);
+    postData.append("user", user);
+    if (formData.image && formData.image.length > 0) {
+      postData.append("image", formData.image[0]);
+    }
+
+    try {
+      const res = await axiosInstance.post("/posts", postData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      if (res.status === 200) {
+        dispatch({ type: "POST_CREATED", data: res.data });
+      }
+    } catch (error) {
+      console.error(
+        "Error creating post:",
+        error.response?.data || error.message
+      );
+      dispatch({
+        type: "POST_FETCH_ERROR",
+        data: error.response?.data || "An error occurred",
+      });
+    }
   };
 
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       const selectedImage = e.target.files[0];
-      setImage(selectedImage);
+      // setImage(selectedImage);
 
       // Create image preview
       const reader = new FileReader();
@@ -43,17 +99,21 @@ const CreatePost = () => {
 
   return (
     <form
-      onSubmit={handlePostSubmit}
+      onSubmit={handleSubmit(handlePostSubmit)}
       className="max-w-xl mx-auto mt-8 p-6 bg-white rounded-lg shadow-md"
     >
       <div className="mb-4">
         <textarea
+          {...register("postContent", { required: "Please Enter something" })}
           className="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-blue-500"
           rows="4"
           placeholder="What's on your mind?"
           value={postContent}
+          id="postContent"
+          name="postContent"
           onChange={(e) => setPostContent(e.target.value)}
         ></textarea>
+        {errors.postContent && <div>Please Post something</div>}
       </div>
 
       <div className="mb-4 flex justify-end">
@@ -64,6 +124,7 @@ const CreatePost = () => {
           Add an image
         </label>
         <input
+          {...register("image")}
           type="file"
           id="image"
           accept="image/*"
