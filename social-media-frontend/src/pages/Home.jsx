@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
+import CreatePost from "../posts/CreatePost";
 import axiosInstance from "../utils/axiosInstance";
 import Post from "./Post";
 
@@ -25,6 +26,7 @@ const Home = () => {
       <h1 className="text-3xl text-red-500 text-center">
         Hello {auth?.user?.username}
       </h1>
+      <CreatePost />
       {posts.map((post) => (
         <Post key={post._id} post={post} />
       ))}

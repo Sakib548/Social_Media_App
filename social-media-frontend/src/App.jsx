@@ -4,7 +4,6 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
 import Footer from "./components/Footer";
-import Navbar from "./components/Navbar";
 import PrivateRoute from "./components/PrivateRoute";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
@@ -12,7 +11,6 @@ const App = () => {
   return (
     <Router>
       <div className="flex flex-col min-h-screen">
-        <Navbar />
         <main className="flex-grow">
           <Routes>
             {/* <Route
