@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem("user");
     }
     setAuth(state.user);
-    console.log("Hello", state.user);
+    //console.log("Hello", state.user);
   }, [state.user]);
 
   const refreshToken = async () => {

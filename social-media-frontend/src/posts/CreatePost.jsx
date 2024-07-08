@@ -21,7 +21,7 @@ const CreatePost = () => {
   } = useForm();
 
   const user = auth?.user?._id;
-  console.log(user);
+  //console.log(user);
   // const handlePostSubmit = async (formData) => {
   //   dispatch({ type: "POST_DATA_FETCHING" });
   //   console.log("FormData", formData);
