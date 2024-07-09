@@ -39,21 +39,34 @@ exports.createPost = async (req, res) => {
 };
 
 exports.editPost = async (req, res) => {
-  const { content } = req.body;
+  const { id, content } = req.body;
+  const imagePath = req.file ? "/uploads/" + req.file.filename : null;
+
   try {
-    const post = await Post.findById(req.params.postId);
+    const post = await Post.findById(id);
+
     if (!post) {
-      return res.status(404).json({ msg: "Post not found" });
-    }
-    if (post.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: "User not authorized" });
+      return res.status(404).json({ error: "Post not found" });
     }
 
+    // Check if the user is authorized to edit this post
+    if (post.user.toString() !== req.user.id) {
+      return res
+        .status(403)
+        .json({ error: "Not authorized to edit this post" });
+    }
+
+    // Update the post
     post.content = content;
+    if (imagePath) {
+      post.image = imagePath;
+    }
+
     await post.save();
     res.json(post);
   } catch (err) {
-    res.status(500).send("Server error");
+    console.error("Error editing post:", err);
+    res.status(500).json({ error: err.message || "Server error" });
   }
 };
 

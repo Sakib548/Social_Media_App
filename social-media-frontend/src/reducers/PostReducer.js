@@ -18,6 +18,13 @@ const PostReducer = (state, action) => {
         posts: [...state.posts, action.data],
       };
 
+    case action.type.EDIT_POST:
+      return {
+        ...state,
+        loading: false,
+        posts: [...state.posts, action.data],
+      };
+
     case action.type.POST_FETCH_ERROR:
       return {
         ...state,

@@ -22,7 +22,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
+    <div className="container mx-auto">
       <h1 className="text-3xl text-red-500 text-center">
         Hello {auth?.user?.username}
       </h1>

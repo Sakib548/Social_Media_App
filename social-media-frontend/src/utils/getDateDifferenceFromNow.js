@@ -11,6 +11,10 @@ export function getDateDifferenceFromNow(time) {
 
   let message;
 
+  if (dayDifference >= 1) {
+    message = ` ${dayDifference}  ${dayDifference > 1 ? "days" : "day"}   `;
+    hourDifference = 0;
+  }
   if (hourDifference > 0) {
     message = ` ${hourDifference}  ${hourDifference > 1 ? "hours" : "hour"}   `;
   }

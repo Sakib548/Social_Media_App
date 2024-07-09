@@ -30,7 +30,7 @@ router.get("/user/:userId", postController.getUserPosts);
 router.post("/:postId/comment", postController.commentOnPost);
 
 // Edit a post
-router.put("/:postId", postController.editPost);
+router.patch("/:id", upload.single("image"), postController.editPost);
 
 // Delete a post
 router.delete("/:postId", postController.deletePost);

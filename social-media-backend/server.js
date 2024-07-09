@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const path = require("path");
 
 dotenv.config();
 
@@ -18,6 +19,8 @@ const corsOptions = {
   credentials: true, // Allow credentials (cookies)
 };
 app.use(cors(corsOptions));
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/posts", require("./routes/postRoutes"));

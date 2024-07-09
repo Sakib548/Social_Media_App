@@ -26,7 +26,7 @@ const Post = ({ post }) => {
   return (
     <article className="card mt-6 lg:mt-8">
       <PostHeader post={post} />
-      <PostBody />
+      <PostBody post={post} />
       <PostActions />
       <PostComments />
     </article>

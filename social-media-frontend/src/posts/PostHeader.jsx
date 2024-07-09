@@ -4,11 +4,13 @@
 // import TimeIcon from "/icons/time.svg";
 import { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { PostContext } from "../context/PostContext";
 import { getDateDifferenceFromNow } from "../utils/getDateDifferenceFromNow";
 const PostHeader = ({ post }) => {
   const { auth } = useContext(AuthContext);
   const isMe = post?.user?._id === auth?.user?._id;
-  const [showAction, setShowAction] = useState(true);
+  const [showAction, setShowAction] = useState(false);
+  const { setIsEditable, isEditable } = useContext(PostContext);
   // const post = {
   //   userName: "Jane Doe",
   //   userAvatar: "path/to/avatar.jpg",
@@ -16,8 +18,8 @@ const PostHeader = ({ post }) => {
   //   location: "New York, NY", // Optional
   // };
 
-  console.log("Post", post);
-  console.log("Auth", auth);
+  // console.log("Post", post);
+  // console.log("Auth", auth);
   return (
     <header className="flex items-center p-5 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-t-xl shadow-lg">
       <div className="flex-shrink-0">
@@ -78,6 +80,7 @@ const PostHeader = ({ post }) => {
               <button
                 className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-150 ease-in-out"
                 role="menuitem"
+                onClick={() => setIsEditable(!isEditable)}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
