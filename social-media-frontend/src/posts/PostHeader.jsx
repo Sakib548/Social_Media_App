@@ -2,11 +2,16 @@
 //import DeleteIcon from "/icons/delete.svg";
 //import EditIcon from "/icons/edit.svg";
 // import TimeIcon from "/icons/time.svg";
-import { useContext, useState } from "react";
+import { useContext, useReducer, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { PostContext } from "../context/PostContext";
+import { PostReducer, initialState } from "../reducers/PostReducer";
+import axiosInstance from "../utils/axiosInstance";
 import { getDateDifferenceFromNow } from "../utils/getDateDifferenceFromNow";
+
 const PostHeader = ({ post }) => {
+  const [state, dispatch] = useReducer(PostReducer, initialState);
+
   const { auth } = useContext(AuthContext);
   const isMe = post?.user?._id === auth?.user?._id;
   const [showAction, setShowAction] = useState(false);
@@ -18,8 +23,23 @@ const PostHeader = ({ post }) => {
   //   location: "New York, NY", // Optional
   // };
 
-  // console.log("Post", post);
+  console.log("Post", post);
   // console.log("Auth", auth);
+
+  const handleDelete = async () => {
+    try {
+      const res = await axiosInstance.delete(`/posts/${post._id}`, {
+        headers: {
+          User_ID: auth?.user?._id,
+        },
+      });
+      if (res.status === 200) {
+        dispatch({ type: "DELETE_POST" });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <header className="flex items-center p-5 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-t-xl shadow-lg">
       <div className="flex-shrink-0">
@@ -101,6 +121,7 @@ const PostHeader = ({ post }) => {
               <button
                 className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-150 ease-in-out"
                 role="menuitem"
+                onClick={handleDelete}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

@@ -22,9 +22,21 @@ const PostReducer = (state, action) => {
       return {
         ...state,
         loading: false,
-        posts: [...state.posts, action.data],
+        // posts: [...state.posts, action.data],
+        posts: [
+          state.posts.map((post) =>
+            post.id === action.data.id ? action.data : post
+          ),
+        ],
       };
 
+    case action.type.DELETE_POST:
+      return {
+        ...state,
+        loading: false,
+        // posts: [...state.posts, action.data],
+        posts: [state.posts.filter((post) => post.id !== action.data.id)],
+      };
     case action.type.POST_FETCH_ERROR:
       return {
         ...state,

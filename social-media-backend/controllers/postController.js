@@ -39,18 +39,23 @@ exports.createPost = async (req, res) => {
 };
 
 exports.editPost = async (req, res) => {
-  const { id, content } = req.body;
+  const { id } = req.params; // Change this line
+
+  const { content, user } = req.body;
   const imagePath = req.file ? "/uploads/" + req.file.filename : null;
+  console.log("Content", content);
 
   try {
     const post = await Post.findById(id);
+    console.log("Req", req.body);
+    // console.log("Post", post);
 
     if (!post) {
       return res.status(404).json({ error: "Post not found" });
     }
 
     // Check if the user is authorized to edit this post
-    if (post.user.toString() !== req.user.id) {
+    if (post.user.toString() !== user) {
       return res
         .status(403)
         .json({ error: "Not authorized to edit this post" });
@@ -73,18 +78,25 @@ exports.editPost = async (req, res) => {
 // Delete a post
 exports.deletePost = async (req, res) => {
   try {
-    const post = await Post.findById(req.params.postId);
+    const { id } = req.params;
+    const post = await Post.findById(id);
+    const user_id = req.header("User_ID");
+    console.log("User_id", user_id);
+    console.log("Post", post);
     if (!post) {
       return res.status(404).json({ msg: "Post not found" });
     }
-    if (post.user.toString() !== req.user.id) {
+
+    //    Uncomment and fix the authorization check
+    if (post.user.toString() != user_id) {
       return res.status(401).json({ msg: "User not authorized" });
     }
 
-    await post.remove();
+    await Post.findByIdAndDelete(id);
     res.json({ msg: "Post removed" });
   } catch (err) {
-    res.status(500).send("Server error");
+    console.error("Error deleting post:", err);
+    res.status(500).json({ msg: "Server error", error: err.message });
   }
 };
 // Get all posts (for home page)

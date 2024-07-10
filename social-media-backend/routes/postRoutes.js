@@ -33,6 +33,6 @@ router.post("/:postId/comment", postController.commentOnPost);
 router.patch("/:id", upload.single("image"), postController.editPost);
 
 // Delete a post
-router.delete("/:postId", postController.deletePost);
+router.delete("/:id", postController.deletePost);
 
 module.exports = router;

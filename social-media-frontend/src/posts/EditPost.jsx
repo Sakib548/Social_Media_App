@@ -1,5 +1,6 @@
-import React, { useReducer } from "react";
+import React, { useContext, useReducer } from "react";
 import { useForm } from "react-hook-form";
+import { AuthContext } from "../context/AuthContext";
 import { PostReducer, initialState } from "../reducers/PostReducer";
 import axiosInstance from "../utils/axiosInstance";
 import AddPhoto from "/icons/addPhoto.svg";
@@ -11,6 +12,8 @@ const EditPost = ({ post }) => {
     ? `${baseUrl}/${post.image.replace(/^\//, "")}`
     : "";
 
+  const { user } = useContext(AuthContext);
+  console.log(user?.user?._id);
   const {
     register,
     handleSubmit,
@@ -28,10 +31,12 @@ const EditPost = ({ post }) => {
 
   const onEditSubmit = async (data) => {
     const formData = new FormData();
-    formData.append("editPostContent", data.editPostContent);
+    formData.append("content", data.editPostContent);
     if (data.editImage instanceof File) {
-      formData.append("editImage", data.editImage);
+      formData.append("image", data.editImage);
     }
+    formData.append("user", user?.user?._id);
+
     console.log("Editing post:", formData);
 
     // Send formData to your API for editing the post
