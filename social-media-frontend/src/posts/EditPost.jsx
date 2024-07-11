@@ -1,6 +1,7 @@
 import React, { useContext, useReducer } from "react";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../context/AuthContext";
+import { PostContext } from "../context/PostContext";
 import { PostReducer, initialState } from "../reducers/PostReducer";
 import axiosInstance from "../utils/axiosInstance";
 import AddPhoto from "/icons/addPhoto.svg";
@@ -13,6 +14,7 @@ const EditPost = ({ post }) => {
     : "";
 
   const { user } = useContext(AuthContext);
+  const { setIsEditable } = useContext(PostContext);
   console.log(user?.user?._id);
   const {
     register,
@@ -53,6 +55,8 @@ const EditPost = ({ post }) => {
       if (res.status === 200) {
         dispatch({ type: "EDIT_POST", data: res.data });
       }
+      dispatch({ type: "POST_DATA_FETCHING" });
+      setIsEditable(false);
     } catch (error) {
       console.error(
         "Error Editing post:",

@@ -19,7 +19,7 @@ const Home = () => {
     };
 
     fetchPosts();
-  }, []);
+  }, [posts]);
 
   return (
     <div className="container mx-auto">

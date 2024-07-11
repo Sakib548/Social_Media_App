@@ -100,7 +100,10 @@ const PostHeader = ({ post }) => {
               <button
                 className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-150 ease-in-out"
                 role="menuitem"
-                onClick={() => setIsEditable(!isEditable)}
+                onClick={() => {
+                  setIsEditable(!isEditable);
+                  setShowAction(!showAction);
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
